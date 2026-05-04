@@ -1,0 +1,8 @@
+# 安装 PyInstaller
+pip install pyinstaller
+
+# 打包
+pyinstaller --onefile --windowed --icon=icon.ico main.py
+
+# 包含资源文件
+pyinstaller --onefile --windowed --icon=icon.ico --add-data "asset;asset" --add-data "translations;translations" --exclude-module PyQt5 main.py
