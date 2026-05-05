@@ -2,7 +2,7 @@
 
 > **版本**: 1.2 MJ_20260502  
 > **作者**: xxtsoft & Dlam567(改进)  
-> **此版本为修改版，基于 xxtsoft xxt8582753 的 班级群监控神器 v1.1 20260319 版本进行修改**  
+> **此版本为修改版，[基于 xxtsoft xxt8582753 的 班级群监控神器 v1.1 20260319 版本](https://github.com/BSOD-MEMZ/QQListener)进行修改**  
 > 原始版权归 xxt8582753 所有, 本修改版基于 MIT 协议进行修改与分发，使用本软件需遵守 MIT 协议.  
 
 修改版功能特性：
@@ -10,6 +10,7 @@
 - **新增** - 光标悬停于托盘图标上可显示上课禁用状态信息
 -   修复   - 修复了一些bug
 
+**下载：[GitHub Release](https://github.com/dlam567/QQListener-v1.2-enhanced/releases)**  
 
 ## 以下为原版介绍页面
 
