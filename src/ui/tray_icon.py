@@ -84,10 +84,11 @@ class TrayIcon(QObject):
                 return
 
             matched_range = self._find_current_range(config, now, config_weekday, current_time)
-
-            if matched_range:
+            weekday = now.isoweekday()
+            current_time = now.strftime("%H:%M")
+            if matched_range and config.is_in_restriction(weekday, current_time):
                 start_str, end_str = matched_range["time_range"].split("-")
-                end_t = datetime.strptime(end_str, "%H:%M").time()
+                end_t = (datetime.strptime(end_str, "%H:%M") + timedelta(minutes=1)).time()
                 start_t = datetime.strptime(start_str, "%H:%M").time()
 
                 end_dt = datetime.combine(now.date(), end_t)
@@ -102,7 +103,7 @@ class TrayIcon(QObject):
 
                 remain = end_dt - now
                 hours = int(remain.total_seconds() // 3600)
-                minutes = int((remain.total_seconds() % 3600) // 60)
+                minutes = int((remain.total_seconds() % 3600) // 60 )
                 tooltip = (
                     f"QQListener\n上课禁用中\n解除时间: {end_str}\n剩余{hours}小时{minutes}分钟"
                 )

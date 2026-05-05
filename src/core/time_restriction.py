@@ -3,7 +3,7 @@
 
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any
 
 
@@ -128,7 +128,7 @@ class TimeRestrictionConfig:
                 day_list = [int(d.strip()) for d in days.split(",") if d.strip().isdigit()]
                 start_str, end_str = time_range.split("-")
                 start_t = datetime.strptime(start_str, "%H:%M").time()
-                end_t = datetime.strptime(end_str, "%H:%M").time()
+                end_t = (datetime.strptime(end_str, "%H:%M") - timedelta(minutes=1)).time()
             except ValueError:
                 continue
 

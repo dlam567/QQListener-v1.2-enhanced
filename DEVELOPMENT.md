@@ -450,10 +450,7 @@ pip install pyinstaller
 pyinstaller --onefile --windowed --icon=icon.ico main.py
 
 # 包含资源文件
-pyinstaller --onefile --windowed --icon=icon.ico \
-    --add-data "asset;asset" \
-    --add-data "translations;translations" \
-    main.py
+pyinstaller --onefile --windowed --add-data "icon.ico;." --add-data "asset;asset" --add-data "translations;translations" -i icon.ico main.py
 ```
 
 ## 相关资源

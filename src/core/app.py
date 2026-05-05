@@ -1,4 +1,6 @@
+import os
 import sys
+import winreg
 
 import pygame
 from loguru import logger
@@ -39,6 +41,8 @@ class QQListenerApp:
         self.app = QApplication(sys.argv)
         self.app.setQuitOnLastWindowClosed(False)
 
+        self._sync_auto_start()
+
         self._load_translator()
 
         self._connect_signals()
@@ -54,6 +58,24 @@ class QQListenerApp:
             logger.error("创建托盘图标失败")
 
         return True
+
+    def _sync_auto_start(self):
+        """同步注册表中的自启状态到配置文件并保存"""
+        try:
+            settings = get_settings()
+            app_path = sys.executable if getattr(sys, 'frozen', False) else os.path.abspath(sys.argv[0])
+            app_name = os.path.splitext(os.path.basename(app_path))[0]
+            reg_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
+            key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, reg_path, 0, winreg.KEY_READ)
+            try:
+                winreg.QueryValueEx(key, app_name)
+                settings.set("auto_start", True)
+            except FileNotFoundError:
+                settings.set("auto_start", False)
+            winreg.CloseKey(key)
+            settings.save()
+        except Exception:
+            logger.exception("同步自启状态失败")
 
     def _load_translator(self):
         lang = self.settings.language

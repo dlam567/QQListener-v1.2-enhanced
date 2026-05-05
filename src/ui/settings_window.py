@@ -63,6 +63,7 @@ class SettingsWindow(QWidget):
 
         self.data = self.settings.get_all()
         self.init_ui()
+        self._init_auto_start_from_registry()
         self._apply_theme()
 
     def _start_file_watcher(self):
@@ -154,6 +155,7 @@ class SettingsWindow(QWidget):
             self.language_combo.setCurrentIndex(2)
 
         self.auto_start = QCheckBox(self.tr("开机自启动"))
+        self.auto_start.setChecked(self.data.get("auto_start", self.settings.auto_start))
 
         form.addRow(self.tr("扫描间隔 (秒)"), self.scan_interval)
         form.addRow(self.tr("冷却时间 (秒)"), self.cooldown)
@@ -1074,6 +1076,10 @@ class SettingsWindow(QWidget):
         )
         self.time_restriction_config.enabled = self.time_restriction_enabled.isChecked()
 
+        auto_start_value = self.auto_start.isChecked()
+        self.settings.set("auto_start", auto_start_value)
+        self._update_auto_start_registry(auto_start_value)
+
         if self.settings.save():
             self.signals.settings_changed.emit()
             QMessageBox.information(self, self.tr("成功"), self.tr("设置已保存"))
@@ -1090,25 +1096,25 @@ class SettingsWindow(QWidget):
         else:
             return "zh-CN"
 
-    def _set_auto_start(self, enable: bool):
+    def _update_auto_start_registry(self, enable: bool) -> bool:
         """
-        设置当前程序开机自启
+        更新开机自启注册表项
         :param enable: True=开启自启, False=关闭自启
+        :return: 是否成功
         """
-        current = enable == Qt.Checked
-        self.auto_start.setEnabled(current)
-        self.set_auto_start(current)
-        self.settings.set("auto_start", self.auto_start.isChecked())
+        # 获取当前程序路径
+        if getattr(sys, 'frozen', False):
+            app_path = sys.executable
+        else:
+            app_path = os.path.abspath(sys.argv[0])
 
-        # 获取当前脚本信息
-        script_path = os.path.abspath(sys.argv[0])
-        app_name = os.path.splitext(os.path.basename(script_path))[0]
+        app_name = os.path.splitext(os.path.basename(app_path))[0]
 
         # 构建命令
-        if script_path.endswith(".py"):
-            command = f'"{sys.executable}" "{script_path}"'
+        if app_path.endswith(".py"):
+            command = f'"{sys.executable}" "{app_path}"'
         else:
-            command = script_path
+            command = f'"{app_path}"'
 
         # 注册表路径
         reg_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
@@ -1120,17 +1126,35 @@ class SettingsWindow(QWidget):
                 winreg.SetValueEx(key, app_name, 0, winreg.REG_SZ, command)
                 print(f"✅ 已开启开机自启: {app_name}")
             else:
-                winreg.DeleteValue(key, app_name)
-                print(f"✅ 已关闭开机自启: {app_name}")
+                try:
+                    winreg.DeleteValue(key, app_name)
+                    print(f"✅ 已关闭开机自启: {app_name}")
+                except FileNotFoundError:
+                    pass
 
             winreg.CloseKey(key)
             return True
-        except FileNotFoundError:
-            QMessageBox.information(self, self.tr("提示"), self.tr(f"❌ 未找到启动项: {app_name}"))
-            return False
         except Exception as e:
-            QMessageBox.information(self, self.tr("提示"), self.tr(f"❌ 操作失败: {e}"))
+            QMessageBox.warning(self, self.tr("错误"), self.tr(f"操作注册表失败: {e}"))
             return False
+
+    def _init_auto_start_from_registry(self):
+        """从注册表读取当前自启状态，同步到设置"""
+        try:
+            app_path = sys.executable if getattr(sys, 'frozen', False) else os.path.abspath(sys.argv[0])
+            app_name = os.path.splitext(os.path.basename(app_path))[0]
+            reg_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
+            key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, reg_path, 0, winreg.KEY_READ)
+            try:
+                winreg.QueryValueEx(key, app_name)
+                self.auto_start.setChecked(True)
+                self.settings.set("auto_start", True)
+            except FileNotFoundError:
+                self.auto_start.setChecked(False)
+                self.settings.set("auto_start", False)
+            winreg.CloseKey(key)
+        except Exception:
+            pass
 
 
 class AddTimeRangeDialog(QDialog):
