@@ -3,7 +3,7 @@
 
 import json
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Any
 
 
@@ -51,7 +51,9 @@ class TimeRestrictionConfig:
 
     @enabled.setter
     def enabled(self, value: bool):
-        if "TimeRestriction" not in self._data or not isinstance(self._data["TimeRestriction"], dict):
+        if "TimeRestriction" not in self._data or not isinstance(
+            self._data["TimeRestriction"], dict
+        ):
             self._data["TimeRestriction"] = {}
         self._data["TimeRestriction"]["enabled"] = value
         self._save()
@@ -63,7 +65,9 @@ class TimeRestrictionConfig:
         return []
 
     def add_time_range(self, days: list[int], start_time: str, end_time: str) -> str:
-        if "TimeRestriction" not in self._data or not isinstance(self._data["TimeRestriction"], dict):
+        if "TimeRestriction" not in self._data or not isinstance(
+            self._data["TimeRestriction"], dict
+        ):
             self._data["TimeRestriction"] = {"enabled": True, "ranges": []}
 
         ranges = self._data["TimeRestriction"].get("ranges", [])
@@ -138,10 +142,8 @@ class TimeRestrictionConfig:
                 # 跨天时间段：两种情况
                 # 1. 当前时间在start之后：需要当天在days中
                 # 2. 当前时间在end之前：需要前一天在days中
-                if current_t >= start_t:
-                    # 在start之后，检查当天
-                    if weekday in day_list:
-                        return True
+                if current_t >= start_t and weekday in day_list:
+                    return True
                 if current_t <= end_t:
                     # 在end之前，检查前一天
                     prev_day = (weekday - 1) % 7

@@ -283,6 +283,7 @@ class Settings:
     def auto_start(self) -> bool:
         return bool(self.get("auto_start", False))
 
+
 def get_settings() -> Settings:
     """获取设置单例实例"""
     return Settings()

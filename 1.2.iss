@@ -5,7 +5,7 @@
 #define MyAppVersion "1.2 MJ_20260502"
 #define MyAppPublisher "xxtsoft & Dlam567(enhance)"
 #define MyAppURL "https://xxtsoft.top/"
-#define MyAppExeName "main.exe"
+#define MyAppExeName "QQListener.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -18,7 +18,8 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={autopf}\{#MyAppName}
+DefaultDirName={commonappdata}\{#MyAppName}
+; DefaultDirName={autopf}\{#MyAppName}
 UninstallDisplayIcon={app}\{#MyAppExeName}
 ; "ArchitecturesAllowed=x64compatible" specifies that Setup cannot run
 ; on anything but x64 and Windows 11 on Arm.

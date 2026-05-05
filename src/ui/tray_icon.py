@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+
 from loguru import logger
 from PySide6.QtCore import QObject, QTimer, Signal
 from PySide6.QtGui import QAction, QCursor, QIcon
@@ -103,10 +104,7 @@ class TrayIcon(QObject):
                 hours = int(remain.total_seconds() // 3600)
                 minutes = int((remain.total_seconds() % 3600) // 60)
                 tooltip = (
-                    f"QQListener\n"
-                    f"上课禁用中\n"
-                    f"解除时间: {end_str}\n"
-                    f"剩余{hours}小时{minutes}分钟"
+                    f"QQListener\n上课禁用中\n解除时间: {end_str}\n剩余{hours}小时{minutes}分钟"
                 )
                 self._tray_icon.setToolTip(tooltip)
             else:
@@ -115,7 +113,7 @@ class TrayIcon(QObject):
                 if next_time:
                     tooltip += f"\n下次禁用: {next_time}"
                 self._tray_icon.setToolTip(tooltip)
-        except Exception as e:
+        except Exception:
             logger.exception("更新托盘提示失败")
             self._tray_icon.setToolTip("QQListener")
 
@@ -191,7 +189,9 @@ class TrayIcon(QObject):
 
                     # 计算目标日期
                     target_date = now.date() + timedelta(days=day_offset)
-                    target_dt = datetime.combine(target_date, datetime.strptime(start_str, "%H:%M").time())
+                    target_dt = datetime.combine(
+                        target_date, datetime.strptime(start_str, "%H:%M").time()
+                    )
 
                     # 如果目标时间已经过去，跳过
                     if target_dt <= now:

@@ -42,6 +42,7 @@ QQListener/
 │   │   ├── app.py            # QQListenerApp 主应用类
 │   │   ├── settings.py       # Settings 配置管理（单例）
 │   │   ├── signals.py        # 全局信号定义
+│   │   ├── time_restriction.py # 时段禁用
 │   │   └── worker.py         # NotificationWorker 工作线程
 │   ├── ui/                   # 用户界面模块
 │   │   ├── settings_window.py # 设置窗口
@@ -53,7 +54,9 @@ QQListener/
 │       └── tts.py             # TTS 语音合成
 ├── asset/                     # 静态资源
 ├── translations/              # 国际化翻译文件
-└── setting.json              # 用户配置文件（运行时生成）
+├── setting.json               # 用户配置文件（运行时生成）
+└── logs/					   # 日志文件夹(运行时生成)
+	└── app.log				   # 日志文件(运行时生成)
 ```
 
 ## 架构设计

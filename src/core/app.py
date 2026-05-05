@@ -1,12 +1,12 @@
 import sys
 
 import pygame
+from loguru import logger
 
 # from loguru import logger
 from PySide6.QtCore import QTranslator
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication, QMessageBox
-from loguru import logger
 
 from src.core.logging import setup_logging
 from src.core.settings import get_settings

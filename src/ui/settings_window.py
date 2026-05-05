@@ -43,6 +43,7 @@ from src.core.time_restriction import get_time_restriction_config
 
 DAY_NAMES = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
 
+
 class SettingsWindow(QWidget):
     """设置窗口"""
 
@@ -1068,7 +1069,7 @@ class SettingsWindow(QWidget):
                 "icon_cancel": self.notify_icon_cancel.text(),
                 "Notify_Title_Font": self.notify_title_font.text(),
                 "Notify_Message_Font": self.notify_message_font.text(),
-                "TimeRestriction": self.time_restriction_config._data.get("TimeRestriction", {})
+                "TimeRestriction": self.time_restriction_config._data.get("TimeRestriction", {}),
             }
         )
         self.time_restriction_config.enabled = self.time_restriction_enabled.isChecked()
@@ -1104,13 +1105,13 @@ class SettingsWindow(QWidget):
         app_name = os.path.splitext(os.path.basename(script_path))[0]
 
         # 构建命令
-        if script_path.endswith('.py'):
+        if script_path.endswith(".py"):
             command = f'"{sys.executable}" "{script_path}"'
         else:
             command = script_path
 
         # 注册表路径
-        reg_path = r'Software\Microsoft\Windows\CurrentVersion\Run'
+        reg_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
 
         try:
             key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, reg_path, 0, winreg.KEY_SET_VALUE)
@@ -1130,6 +1131,7 @@ class SettingsWindow(QWidget):
         except Exception as e:
             QMessageBox.information(self, self.tr("提示"), self.tr(f"❌ 操作失败: {e}"))
             return False
+
 
 class AddTimeRangeDialog(QDialog):
     def __init__(self, parent=None, editing=False):
@@ -1191,12 +1193,14 @@ class AddTimeRangeDialog(QDialog):
 
     def set_start_time(self, time_str: str):
         from PySide6.QtCore import QTime
+
         t = QTime.fromString(time_str, "HH:mm")
         if t.isValid():
             self.start_time.setTime(t)
 
     def set_end_time(self, time_str: str):
         from PySide6.QtCore import QTime
+
         t = QTime.fromString(time_str, "HH:mm")
         if t.isValid():
             self.end_time.setTime(t)
