@@ -5,7 +5,6 @@ import winreg
 import pygame
 from loguru import logger
 
-# from loguru import logger
 from PySide6.QtCore import QTranslator
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication, QMessageBox
@@ -38,7 +37,14 @@ class QQListenerApp:
         except Exception:
             logger.exception("初始化音频失败")
 
-        self.app = QApplication(sys.argv)
+        # 检查是否已有 QApplication 实例，避免重复创建
+        if QApplication.instance() is not None:
+            self.app = QApplication.instance()
+            logger.debug("使用已存在的 QApplication 实例")
+        else:
+            self.app = QApplication(sys.argv)
+            logger.debug("创建新的 QApplication 实例")
+
         self.app.setQuitOnLastWindowClosed(False)
 
         self._sync_auto_start()

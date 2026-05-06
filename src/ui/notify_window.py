@@ -186,7 +186,7 @@ class NotifyWindow(QWidget):
             font_id = QFontDatabase.addApplicationFont(path)
             if font_id != -1:
                 family = QFontDatabase.applicationFontFamilies(font_id)[0]
-                logger.info("字体加载成功: {}", family)
+                # logger.info("字体加载成功: {}", family)
                 return family
             else:
                 logger.warning("字体加载失败: {}", path)

@@ -90,7 +90,6 @@ class SettingsWindow(QWidget):
         self.tabs.addTab(self._create_notify_tab(), self.tr("通知"))
         self.tabs.addTab(self._create_calling_tab(), self.tr("呼叫"))
         self.tabs.addTab(self._create_sound_tab(), self.tr("声音"))
-        self.tabs.addTab(self._create_debug_tab(), self.tr("调试"))
         self.tabs.addTab(self._create_about_tab(), self.tr("关于"))
 
         btn_save = QPushButton(self.tr("保存设置"))
@@ -688,54 +687,6 @@ class SettingsWindow(QWidget):
         form.addRow(self.tr("呼叫提示音"), row3)
 
         return widget
-
-    def _create_debug_tab(self):
-        container = QWidget()
-        stack = QStackedLayout(container)
-        content = QWidget()
-        form = QFormLayout(content)
-
-        self.mainsdk_debug = QPushButton(self.tr("mainsdk活着吗？"))
-        self.mainsdk_debug.clicked.connect(lambda: self._test_exe("mainsdk"))
-        self.kill_mainsdk = QPushButton(self.tr("杀死mainsdk"))
-        self.kill_mainsdk.clicked.connect(lambda: os.system("taskkill /f /im mainsdk.exe"))
-        self.run_mainsdk = QPushButton(self.tr("运行mainsdk"))
-        self.run_mainsdk.clicked.connect(lambda: subprocess.Popen(["mainsdk.exe"]))
-
-        self.debug_hint = QLabel(
-            self.tr(
-                '鉴于现行版本后台主进程工作不稳定，且托盘图标容易丢失，若发现异常建议先杀死mainsdk，然后打开安装目录手动启动而非点击"运行mainsdk"\n注意：鉴于实现逻辑更改，此页面选项已弃用'
-            )
-        )
-        self.debug_hint.setWordWrap(True)
-
-        self.mainsdk_layout = QHBoxLayout()
-        self.mainsdk_layout.addWidget(self.mainsdk_debug)
-        self.mainsdk_layout.addWidget(self.kill_mainsdk)
-        self.mainsdk_layout.addWidget(self.run_mainsdk)
-        form.addRow(self.mainsdk_layout)
-        form.addRow(self.debug_hint)
-        stack.addWidget(content)
-
-        overlay = QWidget()
-        overlay_layout = QVBoxLayout(overlay)
-        overlay_layout.setAlignment(Qt.AlignCenter)
-
-        pix = QPixmap("asset/disable.png")
-        img_label = QLabel()
-        img_label.setPixmap(pix.scaled(64, 64, Qt.KeepAspectRatio, Qt.SmoothTransformation))
-        overlay_layout.addWidget(img_label, alignment=Qt.AlignCenter)
-        tip = QLabel(self.tr("非开发者请勿随意操作调试页面的内容"))
-        overlay_layout.addWidget(tip, alignment=Qt.AlignCenter)
-
-        unlock_btn = QPushButton(self.tr("显示调试控件"))
-        unlock_btn.clicked.connect(lambda: stack.setCurrentWidget(content))
-        overlay_layout.addWidget(unlock_btn, alignment=Qt.AlignCenter)
-
-        stack.addWidget(overlay)
-        stack.setCurrentWidget(overlay)
-
-        return container
 
     def _create_about_tab(self):
         """关于标签页"""

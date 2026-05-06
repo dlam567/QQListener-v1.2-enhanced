@@ -1,0 +1,6 @@
+# 安装 PyInstaller
+pip install pyinstaller
+
+
+# 包含资源文件
+pyinstaller --onefile --windowed  -n "QQListener" --add-data "icon.ico;." --add-data "asset;asset" --add-data "translations;translations" -i icon.ico --exclude-module PyQt5 main.py
