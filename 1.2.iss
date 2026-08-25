@@ -44,10 +44,17 @@ Name: "japanese"; MessagesFile: "compiler:Languages\Japanese.isl"
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
+; 添加[Dirs]区段，为应用程序目录设置权限
+[Dirs]
+; 为整个应用程序安装目录授予users组修改权限
+; 这样所有用户都可以写入程序目录（如保存配置、日志等）
+Name: "{app}"; Permissions: users-modify
+
 [Files]
 Source: "D:\QQListener\dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "D:\QQListener\dist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+
 
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
